@@ -15,8 +15,7 @@ namespace WebAPI.Core
             //Fix JSON Self Referencing Loop Exceptions
             builder.Services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             //builder.Services.RegisterSqliteDatabaseContext(builder.Configuration.GetConnectionString("DefaultCon"));
-            //builder.Services.AddDbContext<DefaultDBContext>(options => { options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultCon")); });
-            builder.Services.AddDbContext<DefaultDBContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultCon")); });
+            builder.Services.RegisterPSqlDatabaseContext(builder.Configuration.GetConnectionString("DefaultCon"));
             builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             builder.Services.AddAutoMapper(typeof(Program));
             var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? builder.Configuration["JWT:Key"];

@@ -17,7 +17,7 @@ namespace WebAPI.DataAccessLayer.Context
         {
             return new List<User>
             {
-                new User{ Id =1 , CreatedOn = DateTime.UtcNow, EmailId = "mak.thevar@outlook.com", IsActive = true, Name = "mak thevar", RoleId =1, Username = "mak-thevar", Password = EasyEncryption.MD5.ComputeMD5Hash("12345678")},
+                new User{ Id =1 , CreatedOn = DateTime.UtcNow, EmailId = "admin@outlook.com", IsActive = true, Name = "Admin", RoleId =1, Username = "admin", Password = EasyEncryption.MD5.ComputeMD5Hash("12345678")},
             };
         }
     }

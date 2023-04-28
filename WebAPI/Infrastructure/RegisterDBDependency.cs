@@ -5,7 +5,21 @@ namespace WebAPI.Infrastructure
 {
     public static class RegisterDBDependency
     {
-        public static void RegisterDatabaseContext(this IServiceCollection services, string connectionString)
+        public static void RegisterPSqlDatabaseContext(this IServiceCollection services, string connectionString)
+        {
+            services.AddDbContext<DefaultDBContext>(options =>
+            {
+                options.UseNpgsql(connectionString, options =>
+                {
+                    options.EnableRetryOnFailure(3);
+                    options.MigrationsAssembly(typeof(DefaultDBContext).Assembly.FullName);
+                });
+                options.EnableDetailedErrors();
+                options.EnableSensitiveDataLogging();
+            });
+        }
+
+        public static void RegisterMSSqlDatabaseContext(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<DefaultDBContext>(options =>
             {
