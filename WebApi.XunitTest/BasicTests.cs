@@ -1,3 +1,5 @@
+using WebAPI.BusinessLogicLayer.DTO;
+
 namespace WebApi.XunitTest
 {
     public class BasicTests
