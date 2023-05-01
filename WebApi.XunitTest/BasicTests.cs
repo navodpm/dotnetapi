@@ -1,4 +1,4 @@
-using WebAPI.BusinessLogicLayer.DTO;
+using AdminService.BusinessLogicLayer.DTO;
 
 namespace WebApi.XunitTest
 {
