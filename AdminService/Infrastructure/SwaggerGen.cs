@@ -8,7 +8,7 @@ namespace AdminService.Core
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Reporting API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Admin Service API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT <strong>Authorization</strong> header using the Bearer scheme. <br/> 
