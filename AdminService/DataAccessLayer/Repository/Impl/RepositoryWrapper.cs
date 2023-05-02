@@ -7,15 +7,19 @@ namespace AdminService.DataAccessLayer.Repository.Impl
     {
         private readonly DefaultDBContext dbContext;
         private readonly IUserRepository _user;
+        private readonly IMachineRepository _machine;
 
         public RepositoryWrapper(DefaultDBContext dbContext)
         {
             this.dbContext = dbContext;
             _user = new UserRepository(dbContext);
+            _machine = new MachineRepository(dbContext);
         }
 
 
         public IUserRepository UserRepository => _user;
+
+        public IMachineRepository MachineRepository => _machine;
 
         public async Task<int> SaveAsync()
         {

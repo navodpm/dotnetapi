@@ -18,6 +18,10 @@ namespace AdminService.Core
             CreateMap<User, UserResponseModel>();
 
             CreateMap<Role, RoleResponseModel>();
+
+            CreateMap<MachineRequestModel, Machine>();
+
+            CreateMap<Machine, MachineResponseModel>();
         }
     }
 }
