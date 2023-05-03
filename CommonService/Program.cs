@@ -1,6 +1,6 @@
-using AdminService.Core;
-using AdminService.DataAccessLayer.Context;
-using Microsoft.EntityFrameworkCore;
+using CommonService.Core;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,21 +11,22 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(opt =>
     opt.SuppressModelStateInvalidFilter = true;
 });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckleF
-builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddCors();
 
-//This will Register all the dependencies like the interfaces, Database, Automapper, etc
+builder.Services.AddEndpointsApiExplorer();
+
 builder.RegisterProjectDependencies();
 
 builder.Services.AddSwaggerGen();
 
+builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+builder.Services.AddOcelot(builder.Configuration);
 
 builder.Host.UseSerilog((context, services, config) =>
 {
     config.WriteTo.Console();
 });
+
 var app = builder.Build();
 
 ////Auto Migration
@@ -50,14 +51,16 @@ app.UseCors(opt =>
     opt.AllowAnyMethod();
 });
 
-//app.UseHttpsRedirection();
-
 app.UseAuthentication();
+
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.RegisterProjectMiddleWares();
 
 app.MapControllers();
+
+app.UseOcelot();
 
 app.Run();

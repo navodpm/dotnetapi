@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminService", "AdminServic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi.XunitTest", "WebApi.XunitTest\WebApi.XunitTest.csproj", "{9F2C55FB-909C-4039-9E6C-50202831BB20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGateway", "APIGateway\APIGateway.csproj", "{0F70743B-A575-4A9B-91EB-C3FC15ABDBDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonService", "CommonService\CommonService.csproj", "{0F70743B-A575-4A9B-91EB-C3FC15ABDBDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationService", "OperationService\OperationService.csproj", "{A7A89FB2-C4EE-4CB8-B83F-9800C7ED0E1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationService", "OperationService\OperationService.csproj", "{A7A89FB2-C4EE-4CB8-B83F-9800C7ED0E1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

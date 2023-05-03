@@ -17,9 +17,9 @@ namespace AdminService.BusinessLogicLayer.Service.Impl
         {
             QRCodeGenerator QrGenerator = new QRCodeGenerator();
             QRCodeData QrCodeInfo = QrGenerator.CreateQrCode(qRCode.QRCodeText, QRCodeGenerator.ECCLevel.Q);
-            QRCode QrCode = new QRCode(QrCodeInfo);
-            Bitmap QrBitmap = QrCode.GetGraphic(60);
-            byte[] BitmapArray = QrBitmap.BitmapToByteArray();
+            //QRCode QrCode = new QRCode(QrCodeInfo);
+            //Bitmap QrBitmap = QrCode.GetGraphic(60);
+            byte[] BitmapArray = null;//QrBitmap.BitmapToByteArray();
             string QrUri = string.Format("data:image/png;base64,{0}", Convert.ToBase64String(BitmapArray));
             qRCode.QRCodeTextBase64 = QrUri;
             return qRCode;
