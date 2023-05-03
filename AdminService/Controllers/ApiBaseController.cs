@@ -13,8 +13,8 @@ namespace AdminService.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var currentUserId = User.Claims.Where(x => x.Type == JwtClaimTypes.Id).SingleOrDefault()?.Value;
-                var currentUserName = User.Claims.Where(x => x.Type == JwtClaimTypes.PreferredUserName).SingleOrDefault()?.Value;
-                var currentRoleId = User.Claims.Where(x => x.Type == "RoleId").SingleOrDefault()?.Value;
+                var currentUserName = User.Claims.Where(x => x.Type == "userName").SingleOrDefault()?.Value;//JwtClaimTypes.PreferredUserName
+                var currentRoleId = User.Claims.Where(x => x.Type == "roleId").SingleOrDefault()?.Value;
                 if (currentUserId is null || currentUserName is null)
                     throw new UnauthorizedAccessException();
 

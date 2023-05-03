@@ -31,6 +31,16 @@ namespace AdminService.DataAccessLayer.Repository.Impl
             return false;
         }
 
+        public async Task<IEnumerable<User>> GetAllUsers()
+        {
+            return await GetAllAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsersWithRoles()
+        {
+            return await GetQueryable().AsNoTracking().Include(x => x.Role).ToListAsync();
+        }
+
         public async Task<IEnumerable<Role>> GetRolesAsync()
         {
             var result = await dbContext.Roles.AsNoTracking().ToListAsync();

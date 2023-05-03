@@ -35,7 +35,7 @@ namespace AdminService.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
-                    Username = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
+                    UserName = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
                     Password = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
                     EmailId = table.Column<string>(type: "character varying(100)", unicode: false, maxLength: 100, nullable: false),
                     RoleId = table.Column<int>(type: "integer", nullable: false),
@@ -65,7 +65,7 @@ namespace AdminService.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "CreatedOn", "EmailId", "IsActive", "ModifiedOn", "Name", "Password", "RoleId", "Username" },
+                columns: new[] { "Id", "CreatedOn", "EmailId", "IsActive", "ModifiedOn", "Name", "Password", "RoleId", "UserName" },
                 values: new object[] { 1, new DateTime(2023, 4, 24, 11, 21, 6, 847, DateTimeKind.Utc).AddTicks(7918), "mak.thevar@outlook.com", true, null, "mak thevar", "25d55ad283aa400af464c76d713c07ad", 1, "mak-thevar" });
 
             migrationBuilder.CreateIndex(
@@ -90,9 +90,9 @@ namespace AdminService.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Username",
+                name: "IX_Users_UserName",
                 table: "Users",
-                column: "Username",
+                column: "UserName",
                 unique: true);
 
             migrationBuilder.AddForeignKey(

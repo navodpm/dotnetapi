@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AdminService.BusinessLogicLayer.DTO;
 using AdminService.DataAccessLayer.Entities;
-using AdminService.DataAccessLayer.Repository.Interfaces;
+using AdminService.BusinessLogicLayer.Service.Interfaces;
 
 namespace AdminService.Controllers
 {
@@ -14,12 +14,12 @@ namespace AdminService.Controllers
     public class UsersController : ApiBaseController
     {
         private readonly IMapper mapper;
-        private readonly IRepositoryWrapper repository;
+        private readonly IServiceWrapper service;
 
-        public UsersController(IMapper mapper, IRepositoryWrapper wrapper)
+        public UsersController(IServiceWrapper service, IMapper mapper)
         {
             this.mapper = mapper;
-            repository = wrapper;
+            this.service = service;
         }
 
 
@@ -28,9 +28,8 @@ namespace AdminService.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Get()
         {
-            var items = await repository.UserRepository.GetAllAsync();
-            var usersList = repository.UserRepository.GetQueryable().AsNoTracking()
-                            .Include(x => x.Role);
+            var items = await service.UserService.GetAllUsers();
+            var usersList = await service.UserService.GetAllUsersWithRoles();
             var result = mapper.Map<List<UserResponseModel>>(usersList.ToList());
             return CreateSuccessResponse(result);
         }
@@ -40,9 +39,7 @@ namespace AdminService.Controllers
         [ProducesResponseType(404, Type = typeof(ApiResponseModel<string>))]
         public async Task<IActionResult> GetById(int id)
         {
-            var user = await repository.UserRepository.GetQueryable().AsNoTracking()
-                            .Include(x => x.Role)
-                            .SingleOrDefaultAsync(x => x.Id == id);
+            var user = await service.UserService.GetUserByIdAsync(id);
             if (user is null)
                 return DataNotFound();
             var result = mapper.Map<UserResponseModel>(user);
@@ -56,9 +53,9 @@ namespace AdminService.Controllers
         {
             var user = mapper.Map<User>(model);
             //Setting default Admin role for new user
-            user.RoleId = 2;
-            var userCreated = await repository.UserRepository.AddAsync(user);
-            await repository.SaveAsync();
+            user.RoleId = 1;
+            var userCreated = await service.UserService.AddUser(user);
+            await service.UserService.SaveAsync();
             return CreateSuccessResponse($"User created successfully with Id {userCreated.Id}");
         }
 
@@ -70,7 +67,7 @@ namespace AdminService.Controllers
         [ProducesResponseType(200, Type = typeof(ApiResponseModel<string>))]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UserRequestModel model)
         {
-            var dbUser = await repository.UserRepository.GetByIdAsync(id);
+            var dbUser = await service.UserService.GetUserByIdAsync(id);
             if (dbUser is null)
                 return DataNotFound();
 
@@ -78,10 +75,10 @@ namespace AdminService.Controllers
             dbUser.Name = model.Name;
             dbUser.EmailId = model.EmailId;
             //dbUser.RoleId = model.RoleId;
-            dbUser.Username = model.Username;
+            dbUser.UserName = model.UserName;
 
 
-            var rowsAffected = await repository.SaveAsync();
+            var rowsAffected = await service.UserService.SaveAsync();
             if (rowsAffected > 0)
                 return CreateSuccessResponse($"User: {id}, Updated successfully!");
             return CreateErrorResponse(System.Net.HttpStatusCode.BadRequest, new List<string> { $"User: {id}, Not Updated!" });
@@ -92,8 +89,8 @@ namespace AdminService.Controllers
         [ProducesResponseType(200, Type = typeof(ApiResponseModel<string>))]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var isDeleted = await repository.UserRepository.DeleteAsync(id);
-            await repository.SaveAsync();
+            var isDeleted = await service.UserService.DeleteAsync(id);
+            await service.UserService.SaveAsync();
             return CreateSuccessResponse($"User with Id : {id} deleted successfully.");
         }
 
@@ -105,8 +102,8 @@ namespace AdminService.Controllers
             role.CreatedById = Constants.CurrentUserId;
 
 
-            var created = await repository.UserRepository.CreateRoleAsync(role);
-            await repository.SaveAsync();
+            var created = await service.UserService.CreateRoleAsync(role);
+            await service.UserService.SaveAsync();
 
             return CreateSuccessResponse($"Role created successfully with Id : {created.Id}");
         }
@@ -115,7 +112,7 @@ namespace AdminService.Controllers
         [ProducesResponseType(200, Type = typeof(ApiResponseModel<List<RoleResponseModel>>))]
         public async Task<IActionResult> GetRole()
         {
-            var roleList = await repository.UserRepository.GetRolesAsync();
+            var roleList = await service.UserService.GetRolesAsync();
             var result = mapper.Map<List<RoleResponseModel>>(roleList);
             return CreateSuccessResponse(result);
         }
@@ -125,7 +122,7 @@ namespace AdminService.Controllers
         [ProducesResponseType(404, Type = typeof(ApiResponseModel<string>))]
         public async Task<IActionResult> GetRoleById(int id)
         {
-            var role = await repository.UserRepository.GetRolesByIdAsync(id);
+            var role = await service.UserService.GetRolesByIdAsync(id);
             if (role is null)
                 return DataNotFound();
 
@@ -139,7 +136,7 @@ namespace AdminService.Controllers
         [ProducesResponseType(200, Type = typeof(ApiResponseModel<string>))]
         public async Task<IActionResult> UpdateRole(int id, RoleRequestModel roleRequest)
         {
-            var dbRole = await repository.UserRepository.GetRolesByIdAsync(id);
+            var dbRole = await service.UserService.GetRolesByIdAsync(id);
             if (dbRole is null)
                 return DataNotFound();
             dbRole.ModifiedById = Constants.CurrentUserId;
@@ -148,7 +145,7 @@ namespace AdminService.Controllers
 
 
 
-            var rowsAffected = await repository.SaveAsync();
+            var rowsAffected = await service.UserService.SaveAsync();
             if (rowsAffected > 0)
                 return CreateSuccessResponse($"Role: {id}, Updated successfully!");
             return CreateErrorResponse(System.Net.HttpStatusCode.BadRequest, new List<string> { $"Role: {id}, Not Updated!" });
@@ -157,8 +154,8 @@ namespace AdminService.Controllers
         [HttpDelete("role/{id}")]
         public async Task<IActionResult> DeleteRole(int id)
         {
-            var dbRole = await repository.UserRepository.DeleteRole(id);
-            await repository.SaveAsync();
+            var dbRole = await service.UserService.DeleteRole(id);
+            await service.UserService.SaveAsync();
             if (dbRole)
                 return CreateSuccessResponse($"Role: {id}, Deleted successfully!");
             return CreateErrorResponse(System.Net.HttpStatusCode.BadRequest, new List<string> { $"Role: {id}, Not Deleted!" });

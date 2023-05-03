@@ -115,7 +115,7 @@ namespace AdminService.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .IsUnicode(false)
@@ -128,7 +128,7 @@ namespace AdminService.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("Username")
+                    b.HasIndex("UserName")
                         .IsUnique();
 
                     b.ToTable("Users");
@@ -143,7 +143,7 @@ namespace AdminService.Migrations
                             Name = "mak thevar",
                             Password = "25d55ad283aa400af464c76d713c07ad",
                             RoleId = 1,
-                            Username = "mak-thevar"
+                            UserName = "mak-thevar"
                         });
                 });
 

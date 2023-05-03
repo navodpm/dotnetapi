@@ -14,14 +14,10 @@ namespace AdminService.Core
                 .ForMember(m => m.Password, opt => opt.MapFrom(src => EasyEncryption.MD5.ComputeMD5Hash(src.Password)));
 
             CreateMap<UserRequestModel, User>();
-
+            CreateMap<LoginRequestModel, User>();
             CreateMap<User, UserResponseModel>();
-
             CreateMap<Role, RoleResponseModel>();
-
-            CreateMap<MachineRequestModel, Machine>();
-
-            CreateMap<Machine, MachineResponseModel>();
+            CreateMap<ChangePasswordRequestModel, User>();
         }
     }
 }

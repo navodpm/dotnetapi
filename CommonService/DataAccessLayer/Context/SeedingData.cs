@@ -17,7 +17,7 @@ namespace CommonService.DataAccessLayer.Context
         {
             return new List<User>
             {
-                new User{ Id =1 , CreatedOn = DateTime.UtcNow, EmailId = "admin@outlook.com", IsActive = true, Name = "Admin", RoleId =1, Username = "admin", Password = EasyEncryption.MD5.ComputeMD5Hash("12345678")},
+                new User{ Id =1 , CreatedOn = DateTime.UtcNow, EmailId = "admin@outlook.com", IsActive = true, Name = "Admin", RoleId =1, UserName = "admin", Password = EasyEncryption.MD5.ComputeMD5Hash("12345678")},
             };
         }
     }

@@ -4,6 +4,8 @@ using AdminService.DataAccessLayer.Context;
 using AdminService.DataAccessLayer.Repository.Impl;
 using AdminService.DataAccessLayer.Repository.Interfaces;
 using AdminService.Infrastructure;
+using AdminService.BusinessLogicLayer.Service.Interfaces;
+using AdminService.BusinessLogicLayer.Service.Impl;
 
 namespace AdminService.Core
 {
@@ -15,8 +17,10 @@ namespace AdminService.Core
             //Fix JSON Self Referencing Loop Exceptions
             builder.Services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             //builder.Services.RegisterSqliteDatabaseContext(builder.Configuration.GetConnectionString("DefaultCon"));
-            builder.Services.RegisterPSqlDatabaseContext(builder.Configuration.GetConnectionString("DefaultCon"));
+            //builder.Services.RegisterPSqlDatabaseContext(builder.Configuration.GetConnectionString("DefaultCon"));
+            builder.Services.RegisterMSSqlDatabaseContext(builder.Configuration.GetConnectionString("DefaultCon"));
             builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            builder.Services.AddScoped<IServiceWrapper, ServiceWrapper>();
             builder.Services.AddAutoMapper(typeof(Program));
             var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? builder.Configuration["JWT:Key"];
             builder.Services.RegisterJWTAuthentication(jwtKey);

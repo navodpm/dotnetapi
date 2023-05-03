@@ -38,4 +38,7 @@
 		<Folder Include="Migrations\" />
 		<Folder Include="SqliteDB\" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\CommonService\CommonService.csproj" />
+	</ItemGroup>
 </Project>

@@ -8,5 +8,7 @@ namespace AdminService.DataAccessLayer.Repository.Interfaces
         Task<IEnumerable<Role>> GetRolesAsync();
         Task<Role?> GetRolesByIdAsync(int id);
         Task<bool> DeleteRole(int id);
+        Task<IEnumerable<User>> GetAllUsersWithRoles();
+        Task<IEnumerable<User>> GetAllUsers();
     }
 }

@@ -17,7 +17,6 @@ namespace AdminService.DataAccessLayer.Context
 
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
-        public virtual DbSet<Machine> Machines { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -47,11 +46,11 @@ namespace AdminService.DataAccessLayer.Context
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Username)
+                entity.Property(e => e.UserName)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.HasIndex(i => i.Username)
+                entity.HasIndex(i => i.UserName)
                 .IsUnique();
 
                 entity.HasIndex(i => i.EmailId)

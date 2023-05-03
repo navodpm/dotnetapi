@@ -46,11 +46,11 @@ namespace CommonService.DataAccessLayer.Context
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Username)
+                entity.Property(e => e.UserName)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.HasIndex(i => i.Username)
+                entity.HasIndex(i => i.UserName)
                 .IsUnique();
 
                 entity.HasIndex(i => i.EmailId)

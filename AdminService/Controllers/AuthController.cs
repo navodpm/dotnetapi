@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using AdminService.BusinessLogicLayer.DTO;
 using AdminService.Core;
-using AdminService.DataAccessLayer.Repository.Interfaces;
+using AdminService.BusinessLogicLayer.Service.Interfaces;
+using AdminService.DataAccessLayer.Entities;
 
 namespace AdminService.Controllers
 {
@@ -13,13 +14,13 @@ namespace AdminService.Controllers
     [ApiController]
     public class AuthController : ApiBaseController
     {
-        private readonly IRepositoryWrapper repository;
+        private readonly IServiceWrapper service;
         private readonly IConfiguration configuration;
         private readonly IMapper mapper;
 
-        public AuthController(IRepositoryWrapper repository, IConfiguration configuration, IMapper mapper)
+        public AuthController(IServiceWrapper service, IConfiguration configuration, IMapper mapper)
         {
-            this.repository = repository;
+            this.service = service;
             this.configuration = configuration;
             this.mapper = mapper;
         }
@@ -27,18 +28,17 @@ namespace AdminService.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestModel loginModel)
         {
-            var hashedPass = EasyEncryption.MD5.ComputeMD5Hash(loginModel.Password);
-            var user = await this.repository.UserRepository.GetQueryable().Include(o => o.Role).SingleOrDefaultAsync(x => x.Username == loginModel.UserName && x.Password == hashedPass);
+            var userModel = mapper.Map<User>(loginModel);
+            var user = await this.service.UserService.GetUserByUserNamePassword(userModel);
 
             if (user is null)
-                return Unauthorized("Invalid Username or Password!");
-
+                return Unauthorized("Invalid UserName or Password!");
 
             var token = JWT.GenerateToken(new Dictionary<string, string> {
                 { ClaimTypes.Role, user.Role.Description  },
                 { "roleId", user.Role.Id.ToString()  },
                 //{ JwtClaimTypes.PreferredUserName, user.Name },
-                { "userName", user.Name },
+                { "userName", user.UserName },
                 { JwtClaimTypes.Id, user.Id.ToString() },
                 { JwtClaimTypes.Email, user.EmailId}
             }, configuration["JWT:Key"]);
@@ -50,11 +50,12 @@ namespace AdminService.Controllers
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequestModel changePasswordModel)
         {
-            var hashedPass = EasyEncryption.MD5.ComputeMD5Hash(changePasswordModel.Password);
-            var user = await this.repository.UserRepository.GetQueryable().Include(o => o.Role).SingleOrDefaultAsync(x => x.Username == changePasswordModel.UserName && x.Password == hashedPass);
+            var userModel = mapper.Map<User>(changePasswordModel);
+            //userModel.Password = changePasswordModel.NewPassword;
+            var user = await this.service.UserService.GetUserByUserNamePassword(userModel);
 
             if (user is null)
-                return Unauthorized("Invalid Username or Password!");
+                return Unauthorized("Invalid UserName or Password!");
 
             if (!changePasswordModel.NewPassword.Equals(changePasswordModel.ConfirmPassword))
                 return CreateErrorResponse(System.Net.HttpStatusCode.BadRequest, new List<string> { $"Password and Confirm Password Mismatch" });
@@ -62,13 +63,10 @@ namespace AdminService.Controllers
             var hashedPassNew = EasyEncryption.MD5.ComputeMD5Hash(changePasswordModel.NewPassword);
             user.Password = hashedPassNew;
 
-            var rowsAffected = await repository.SaveAsync();
+            var rowsAffected = await this.service.UserService.SaveAsync();
             if (rowsAffected > 0)
-                return CreateSuccessResponse($"User: {user.Username}, Updated successfully!");
-            return CreateErrorResponse(System.Net.HttpStatusCode.BadRequest, new List<string> { $"User: {user.Username}, Not Updated!" });
-
-            //var userResp = mapper.Map<UserResponseModel>(user);
-            //return CreateSuccessResponse(new { UserData = userResp });
+                return CreateSuccessResponse($"User: {user.UserName}, Updated successfully!");
+            return CreateErrorResponse(System.Net.HttpStatusCode.BadRequest, new List<string> { $"User: {user.UserName}, Not Updated!" });
         }
     }
 

@@ -7,7 +7,7 @@ namespace AdminService.DataAccessLayer.Entities
     {
 
         public string Name { get; set; } = null!;
-        public string Username { get; set; } = null!;
+        public string UserName { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string EmailId { get; set; } = null!;
         public int RoleId { get; set; }
